@@ -1,0 +1,16 @@
+[
+  {
+    "creatorName": "MrBeast",
+    "platform": "YouTube",
+    "growthStrategy": "Massive scale challenges and high-budget production.",
+    "subscriberGain": 60000000,
+    "difficultyLevel": "Hard"
+  },
+  {
+    "creatorName": "Marques Brownlee",
+    "platform": "YouTube",
+    "growthStrategy": "Ultra-high-quality tech reviews and consistent long-term scheduling.",
+    "subscriberGain": 2000000,
+    "difficultyLevel": "Medium"
+  }
+]
