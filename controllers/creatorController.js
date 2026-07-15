@@ -1,42 +1,26 @@
+const APIFeatures = require("../utils/apiFeatures");
 const Creator = require("../models/creatorModel");
 exports.getAllCreators = async (req, res) => {
   try {
-    //Basic filtering
-    let queryObj = { ...req.query };
-    const excludedFields = ["page", "sort", "limit", "fields"];
-    excludedFields.forEach((el) => delete queryObj[el]);
-    //Advanced filtering
-    let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-    console.log("PARSED QUERY OBJ:", JSON.parse(queryStr));
-    let query = Creator.find(JSON.parse(queryStr));
-    //Sorting
-    if (req.query.sort) {
-      const sortBy = req.query.sort.split(",").join(" ");
-      query = query.sort(sortBy);
-    } else {
-      query = query.sort("-createdAt");
-    }
-    //Field Limiting
-    if (req.query.fields) {
-      const fields = req.query.fields.split(",").join(" ");
-      query = query.select(fields);
-    } else {
-      query = query.select("-__v");
-    }
+    // EXECUTE QUERY
+    const features = new APIFeatures(Creator.find(), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
 
-    const creators = await query;
+    const creators = await features.query;
+
+    // SEND RESPONSE
     res.status(200).json({
       status: "success",
       results: creators.length,
-      data: {
-        creators,
-      },
+      data: { creators },
     });
   } catch (err) {
     res.status(404).json({
       status: "fail",
-      error: err,
+      error: err.message,
     });
   }
 };
@@ -93,4 +77,10 @@ exports.deleteCreator = async (req, res) => {
       error: err,
     });
   }
+};
+exports.aliasTopCreators = (req, res, next) => {
+  req.query.limit = "3";
+  req.query.sort = "-subscriberGain";
+  req.query.fields = "creatorName,platform,subscriberGain";
+  next();
 };
