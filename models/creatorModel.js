@@ -61,6 +61,11 @@ creatorSchema.pre(/^find/, function () {
   this.find({ isSecretCreator: { $ne: true } });
 });
 
+// 4) AGGREGATION MIDDLEWARE: runs before .aggregate()
+creatorSchema.pre("aggregate", function () {
+  this.pipeline().unshift({ $match: { isSecretCreator: { $ne: true } } });
+});
+
 const Creator = mongoose.model("Creator", creatorSchema);
 
 module.exports = Creator;
