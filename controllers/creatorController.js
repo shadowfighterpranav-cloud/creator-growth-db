@@ -84,3 +84,38 @@ exports.aliasTopCreators = (req, res, next) => {
   req.query.fields = "creatorName,platform,subscriberGain";
   next();
 };
+
+exports.getCreatorStats = async (req, res) => {
+  try {
+    const stats = await Creator.aggregate([
+      {
+        // Stage 1: Match only creators with a positive subscriber gain
+        $match: { subscriberGain: { $gte: 0 } },
+      },
+      {
+        // Stage 2: Group by difficulty level and calculate stats
+        $group: {
+          _id: { $toUpper: "$difficultyLevel" },
+          numCreators: { $sum: 1 },
+          avgSubscribers: { $avg: "$subscriberGain" },
+          minSubscribers: { $min: "$subscriberGain" },
+          maxSubscribers: { $max: "$subscriberGain" },
+        },
+      },
+      {
+        // Stage 3: Sort the results by average subscribers descending
+        $sort: { avgSubscribers: -1 },
+      },
+    ]);
+
+    res.status(200).json({
+      status: "success",
+      data: { stats },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: "fail",
+      error: err.message,
+    });
+  }
+};

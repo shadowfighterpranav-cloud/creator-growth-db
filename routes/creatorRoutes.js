@@ -11,6 +11,8 @@ router
   .get(creatorController.getAllCreators)
   .post(creatorController.createCreator);
 
+router.route("/creator-stats").get(creatorController.getCreatorStats);
+
 router
   .route("/:id")
   .patch(creatorController.updateCreator)
