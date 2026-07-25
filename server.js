@@ -1,16 +1,30 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-dotenv.config({ path: "./config.env" });
 
-const app = require("./app");
-// 1. CONNECT TO YOUR CLOUD DATABASE
-// Replace <PASSWORD> with your actual database user password
-// Change 'natours' to 'creator-growth' right before the question mark
-const DB = process.env.DATABASE;
-mongoose.connect(DB).then(() => {
-  console.log("DB connection successful!");
+// 1. Uncaught Exceptions (MUST be registered before any application code runs)
+process.on("uncaughtException", (err) => {
+  console.log("UNCAUGHT EXCEPTION! 💥 Shutting down...");
+  console.log(err.name, err.message);
+  process.exit(1);
 });
-const port = 8000;
-app.listen(port, () => {
-  console.log("Server running on port 3000");
+
+dotenv.config({ path: "./config.env" });
+const app = require("./app");
+
+const DB = process.env.DATABASE;
+
+mongoose.connect(DB).then(() => console.log("DB connection successful!"));
+
+const port = process.env.PORT || 8000;
+const server = app.listen(port, () => {
+  console.log(`App running on port ${port}...`);
+});
+
+// 2. Unhandled Promise Rejections (e.g., DB connection fails)
+process.on("unhandledRejection", (err) => {
+  console.log("UNHANDLED REJECTION! 💥 Shutting down...");
+  console.log(err.name, err.message);
+  server.close(() => {
+    process.exit(1);
+  });
 });

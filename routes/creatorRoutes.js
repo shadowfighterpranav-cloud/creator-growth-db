@@ -13,8 +13,10 @@ router
 
 router.route("/creator-stats").get(creatorController.getCreatorStats);
 
+// Added .get() here! 👇
 router
   .route("/:id")
+  .get(creatorController.getCreator)
   .patch(creatorController.updateCreator)
   .delete(creatorController.deleteCreator);
 
