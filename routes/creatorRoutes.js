@@ -1,23 +1,20 @@
 const express = require("express");
-const router = express.Router();
 const creatorController = require("../controllers/creatorController");
+const authController = require("../controllers/authController");
 
-router
-  .route("/top-3-gainers")
-  .get(creatorController.aliasTopCreators, creatorController.getAllCreators);
+const router = express.Router();
 
 router
   .route("/")
-  .get(creatorController.getAllCreators)
+  .get(authController.protect, creatorController.getAllCreators)
   .post(creatorController.createCreator);
 
-router.route("/creator-stats").get(creatorController.getCreatorStats);
-
-// Added .get() here! 👇
 router
   .route("/:id")
-  .get(creatorController.getCreator)
-  .patch(creatorController.updateCreator)
-  .delete(creatorController.deleteCreator);
+  .delete(
+    authController.protect,
+    authController.restrictTo("admin"),
+    creatorController.deleteCreator,
+  );
 
 module.exports = router;
