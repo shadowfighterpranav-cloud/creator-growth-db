@@ -15,6 +15,12 @@ const creatorSchema = new mongoose.Schema(
       required: [true, "A strategy must be tied to a primary platform"],
       enum: ["YouTube", "TikTok", "Twitch", "Instagram"],
     },
+    managers: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+      },
+    ],
     growthStrategy: {
       type: String,
       required: [true, "A growth strategy breakdown is required"],
@@ -46,6 +52,12 @@ const creatorSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   },
 );
+// Virtual populate connection to Review model
+creatorSchema.virtual("reviews", {
+  ref: "Review",
+  foreignField: "creator", // Name of field in Review model
+  localField: "_id", // Name of field in Creator model
+});
 
 creatorSchema.virtual("weeklySubscriberGain").get(function () {
   return Math.round(this.subscriberGain / 52);
@@ -59,6 +71,13 @@ creatorSchema.pre("save", function () {
 // 3) QUERY MIDDLEWARE: runs before any query starting with "find"
 creatorSchema.pre(/^find/, function () {
   this.find({ isSecretCreator: { $ne: true } });
+});
+// Query middleware to populate referenced managers on all FIND queries
+creatorSchema.pre(/^find/, function () {
+  this.populate({
+    path: "managers",
+    select: "-__v -passwordChangedAt",
+  });
 });
 
 // 4) AGGREGATION MIDDLEWARE: runs before .aggregate()
