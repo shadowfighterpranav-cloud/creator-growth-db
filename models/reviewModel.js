@@ -34,12 +34,11 @@ const reviewSchema = new mongoose.Schema(
 );
 
 // Auto-populate author information on reviews
-reviewSchema.pre(/^find/, function (next) {
+reviewSchema.pre(/^find/, function () {
   this.populate({
     path: "user",
     select: "name",
   });
-  next();
 });
 
 const Review = mongoose.model("Review", reviewSchema);

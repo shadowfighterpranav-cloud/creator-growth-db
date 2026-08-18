@@ -1,8 +1,10 @@
 const express = require("express");
+const reviewRouter = require("./reviewRoutes");
 const creatorController = require("../controllers/creatorController");
 const authController = require("../controllers/authController");
 
 const router = express.Router();
+router.use("/:creatorId/reviews", reviewRouter);
 
 router
   .route("/")
