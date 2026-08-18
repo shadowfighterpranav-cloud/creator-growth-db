@@ -52,6 +52,11 @@ const creatorSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   },
 );
+// Single-field index
+creatorSchema.index({ platform: 1 });
+
+// Compound index (Order matters: most queried fields first)
+creatorSchema.index({ subscriberCount: -1, category: 1 });
 // Virtual populate connection to Review model
 creatorSchema.virtual("reviews", {
   ref: "Review",
