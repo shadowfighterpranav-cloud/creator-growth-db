@@ -6,7 +6,7 @@ exports.getOverview = catchAsync(async (req, res, next) => {
   // 1) Get creator data from collection
   const creators = await Creator.find();
 
-  // 2) Build template & 3) Render that template using creator data from 1)
+  // 2) Render template using creator data
   res.status(200).render("overview", {
     title: "All Creators",
     creators,
@@ -14,7 +14,7 @@ exports.getOverview = catchAsync(async (req, res, next) => {
 });
 
 exports.getCreator = catchAsync(async (req, res, next) => {
-  // 1) Get data for the requested creator (including reviews and managers)
+  // 1) Get data for requested creator
   const creator = await Creator.findOne({ slug: req.params.slug }).populate({
     path: "reviews",
     fields: "review rating user",
@@ -24,9 +24,21 @@ exports.getCreator = catchAsync(async (req, res, next) => {
     return next(new AppError("There is no creator with that name.", 404));
   }
 
-  // 2) Build template & 3) Render template using data from 1)
+  // 2) Render detail page
   res.status(200).render("creator", {
     title: `${creator.name} Profile`,
     creator,
   });
 });
+
+exports.getLoginForm = (req, res) => {
+  res.status(200).render("login", {
+    title: "Log into your account",
+  });
+};
+
+exports.getAccount = (req, res) => {
+  res.status(200).render("account", {
+    title: "Your Account",
+  });
+};

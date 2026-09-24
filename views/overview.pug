@@ -1,0 +1,28 @@
+extends base
+
+block content
+  main.main
+    .card-container
+      each creator in creators
+        .card
+          .card__header
+            .card__picture
+              img.card__picture-img(
+                src=creator.imageCover && creator.imageCover.startsWith('http') ? creator.imageCover : `https://dummyimage.com/600x360/4a5568/ffffff&text=${encodeURIComponent(creator.creatorName || creator.name || 'Creator')}`
+                alt=`${creator.creatorName || creator.name || 'Creator'}`
+              )
+            h3.heading-tertirary
+              span= creator.creatorName || creator.name || 'Anonymous Creator'
+
+          .card__details
+            h4.card__sub-heading #{creator.platform || 'YouTube'} • #{creator.category || creator.niche || 'General'}
+            p.card__text= creator.summary || creator.growthStrategy || 'No summary available.'
+            
+            .card__data
+              span Subscribers: #{creator.subscriberCount ? creator.subscriberCount.toLocaleString() : (creator.subscriberGain ? creator.subscriberGain.toLocaleString() : 0)}
+            
+            .card__data
+              span Rating: #{creator.ratingsAverage || creator.rating || 4.5} (#{creator.ratingsQuantity || creator.numRatings || 10})
+
+          .card__footer
+            a.btn.btn--green.btn--small(href=`/creator/${creator.slug || creator._id}`) Details

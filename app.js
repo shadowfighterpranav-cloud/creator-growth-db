@@ -20,7 +20,7 @@ const globalErrorHandler = require("./controllers/errorController");
 const app = express();
 
 app.use(cors());
-app.options("*", cors());
+app.options("/{*splat}", cors()); // <-- Fixed CORS options wildcard route
 
 app.use(compression());
 
@@ -32,7 +32,23 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 
 // 1) Set security HTTP headers
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        imgSrc: [
+          "'self'",
+          "data:",
+          "https://dummyimage.com",
+          "https://images.unsplash.com",
+          "https://picsum.photos",
+        ],
+      },
+    },
+  }),
+);
 
 // 2) Limit requests from same API
 const limiter = rateLimit({
@@ -47,10 +63,12 @@ app.use(express.json({ limit: "10kb" }));
 app.use(cookieParser());
 
 // 4) Data sanitization against NoSQL query injection
-app.use(mongoSanitize());
-
-// 5) Data sanitization against XSS
-app.use(xss());
+app.use((req, res, next) => {
+  if (req.body) mongoSanitize.sanitize(req.body);
+  if (req.params) mongoSanitize.sanitize(req.params);
+  if (req.query) mongoSanitize.sanitize(req.query);
+  next();
+});
 
 // 6) Prevent parameter pollution
 app.use(
@@ -69,7 +87,7 @@ app.use("/api/v1/reviews", reviewRouter);
 app.use("/api/v1/bookings", bookingRouter);
 
 // 8) CATCH-ALL & GLOBAL ERROR HANDLER
-app.all("/*path", (req, res, next) => {
+app.all("/{*splat}", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 

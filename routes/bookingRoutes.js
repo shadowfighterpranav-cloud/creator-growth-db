@@ -6,11 +6,6 @@ const router = express.Router();
 
 router.use(authController.protect);
 
-router.get(
-  "/checkout-session/:creatorId",
-  bookingController.getCheckoutSession,
-);
-
 router.use(authController.restrictTo("admin"));
 
 router

@@ -1,0 +1,31 @@
+extends base
+
+block content
+  main.main
+    .creator-detail-card
+      .creator-detail-header
+        img.creator-detail-img(
+          src=creator.imageCover && creator.imageCover.startsWith('http') ? creator.imageCover : `https://dummyimage.com/600x360/4a5568/ffffff&text=${encodeURIComponent(creator.creatorName || creator.name || 'Creator')}`
+          alt=`${creator.creatorName || creator.name}`
+        )
+        h1= creator.creatorName || creator.name || 'Creator Profile'
+        p.sub-heading #{creator.platform || 'YouTube'} • #{creator.category || creator.niche || 'General'}
+
+      .creator-detail-body
+        .detail-section
+          h3 Strategy & Summary
+          p= creator.summary || creator.growthStrategy || 'No detailed strategy available yet.'
+
+        .detail-stats
+          .stat-box
+            h4 Subscribers
+            p #{creator.subscriberCount ? creator.subscriberCount.toLocaleString() : (creator.subscriberGain ? creator.subscriberGain.toLocaleString() : 0)}
+          .stat-box
+            h4 Rating
+            p #{creator.ratingsAverage || creator.rating || 4.5} / 5 (#{creator.ratingsQuantity || creator.numRatings || 10} reviews)
+          .stat-box
+            h4 Difficulty Level
+            p= creator.difficultyLevel || 'Medium'
+
+      .creator-detail-footer
+        a.btn.btn--green(href='/') ← Back to Overview
