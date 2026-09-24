@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
@@ -6,12 +7,21 @@ const xss = require("xss-clean");
 const hpp = require("hpp");
 const cookieParser = require("cookie-parser");
 
+const viewRouter = require("./routes/viewRoutes");
 const creatorRouter = require("./routes/creatorRoutes");
+const reviewRouter = require("./routes/reviewRoutes");
 const userRouter = require("./routes/userRoutes");
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
 
 const app = express();
+
+// Set up Pug template engine
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views"));
+
+// Serve static files (CSS, images, JS)
+app.use(express.static(path.join(__dirname, "public")));
 
 // 1) Set security HTTP headers
 app.use(helmet());
@@ -44,11 +54,13 @@ app.use(
 app.set("query parser", "extended");
 
 // 7) ROUTES
+app.use("/", viewRouter);
 app.use("/api/v1/creators", creatorRouter);
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/reviews", reviewRouter);
 
 // 8) CATCH-ALL & GLOBAL ERROR HANDLER
-app.all("/{*splat}", (req, res, next) => {
+app.all("/*path", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 

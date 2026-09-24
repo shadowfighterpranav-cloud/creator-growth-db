@@ -66,15 +66,9 @@ reviewSchema.post("save", function () {
   this.constructor.calcAverageRatings(this.creator);
 });
 
-// Update & Delete hooks using findOneAnd
-reviewSchema.pre(/^findOneAnd/, async function (next) {
-  this.r = await this.clone().findOne();
-  next();
-});
-
-reviewSchema.post(/^findOneAnd/, async function () {
-  if (this.r) {
-    await this.r.constructor.calcAverageRatings(this.r.creator);
+reviewSchema.post(/^findOneAnd/, async function (doc) {
+  if (doc) {
+    await doc.constructor.calcAverageRatings(doc.creator);
   }
 });
 // Auto-populate author information on reviews
