@@ -1,5 +1,7 @@
 const express = require("express");
 const path = require("path");
+const cors = require("cors");
+const compression = require("compression");
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
@@ -11,10 +13,16 @@ const viewRouter = require("./routes/viewRoutes");
 const creatorRouter = require("./routes/creatorRoutes");
 const reviewRouter = require("./routes/reviewRoutes");
 const userRouter = require("./routes/userRoutes");
+const bookingRouter = require("./routes/bookingRoutes");
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
 
 const app = express();
+
+app.use(cors());
+app.options("*", cors());
+
+app.use(compression());
 
 // Set up Pug template engine
 app.set("view engine", "pug");
@@ -58,6 +66,7 @@ app.use("/", viewRouter);
 app.use("/api/v1/creators", creatorRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/reviews", reviewRouter);
+app.use("/api/v1/bookings", bookingRouter);
 
 // 8) CATCH-ALL & GLOBAL ERROR HANDLER
 app.all("/*path", (req, res, next) => {
