@@ -1,0 +1,24 @@
+extends base
+
+block content
+  main.main
+    .card-container
+      each creator in creators
+        .card
+          .card__header
+            .card__picture
+              .card__picture-overlay &nbsp;
+              img.card__picture-img(src=`/img/creators/${creator.imageCover}`, alt=`${creator.name}`)
+            h3.heading-tertirary
+              span= creator.name
+
+          .card__details
+            h4.card__sub-heading= `${creator.platform} • ${creator.category}`
+            p.card__text= creator.summary
+            .card__data
+              span Subscribers: #{creator.subscriberCount.toLocaleString()}
+            .card__data
+              span Rating: #{creator.ratingsAverage} (#{creator.ratingsQuantity})
+
+          .card__footer
+            a.btn.btn--green.btn--small(href=`/creator/${creator.slug}`) Details
