@@ -171,3 +171,43 @@ footer {
   border-top: 1px solid #eee;
   padding-top: 20px;
 }
+/* Card Container Picture Positioning */
+.card__picture {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Tier Glow Borders */
+.card--gold {
+  border: 3px solid #f59e0b !important;
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.35);
+}
+
+.card--silver {
+  border: 3px solid #94a3b8 !important;
+  box-shadow: 0 8px 24px rgba(148, 163, 184, 0.35);
+}
+
+/* Tier Badges Positioned inside Card Image */
+.tier-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #ffffff;
+  z-index: 10;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.tier-badge--gold {
+  background-color: #f59e0b !important;
+}
+
+.tier-badge--silver {
+  background-color: #64748b !important;
+}

@@ -2,15 +2,23 @@
   {
     "creatorName": "MrBeast",
     "platform": "YouTube",
+    "category": "General",
     "growthStrategy": "Massive scale challenges and high-budget production.",
     "subscriberGain": 60000000,
-    "difficultyLevel": "Hard"
+    "difficultyLevel": "Hard",
+    "ratingsAverage": 4.9,
+    "ratingsQuantity": 250,
+    "imageCover": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop"
   },
   {
     "creatorName": "Marques Brownlee",
     "platform": "YouTube",
+    "category": "General",
     "growthStrategy": "Ultra-high-quality tech reviews and consistent long-term scheduling.",
-    "subscriberGain": 2000000,
-    "difficultyLevel": "Medium"
+    "subscriberGain": 20000000,
+    "difficultyLevel": "Medium",
+    "ratingsAverage": 4.6,
+    "ratingsQuantity": 180,
+    "imageCover": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop"
   }
 ]

@@ -4,9 +4,19 @@ block content
   main.main
     .card-container
       each creator in creators
-        .card
+        - const currentRating = creator.ratingsAverage;
+        
+        - let tierClass = 'card--silver';
+        - let tierBadgeClass = 'tier-badge--silver';
+        - let tierLabel = 'SILVER TIER';
+
+        - if (currentRating >= 4.8) { tierClass = 'card--gold'; tierBadgeClass = 'tier-badge--gold'; tierLabel = 'GOLD TIER'; }
+        - else if (currentRating >= 4.0 && currentRating < 4.5) { tierClass = 'card--bronze'; tierBadgeClass = 'tier-badge--bronze'; tierLabel = 'BRONZE TIER'; }
+
+        .card(class=tierClass)
           .card__header
             .card__picture
+              span.tier-badge(class=tierBadgeClass)= tierLabel
               img.card__picture-img(
                 src=creator.imageCover && creator.imageCover.startsWith('http') ? creator.imageCover : `https://dummyimage.com/600x360/4a5568/ffffff&text=${encodeURIComponent(creator.creatorName || creator.name || 'Creator')}`
                 alt=`${creator.creatorName || creator.name || 'Creator'}`
@@ -22,7 +32,7 @@ block content
               span Subscribers: #{creator.subscriberCount ? creator.subscriberCount.toLocaleString() : (creator.subscriberGain ? creator.subscriberGain.toLocaleString() : 0)}
             
             .card__data
-              span Rating: #{creator.ratingsAverage || creator.rating || 4.5} (#{creator.ratingsQuantity || creator.numRatings || 10})
+              span Rating: #{currentRating} (#{creator.ratingsQuantity || 0})
 
           .card__footer
             a.btn.btn--green.btn--small(href=`/creator/${creator.slug || creator._id}`) Details
