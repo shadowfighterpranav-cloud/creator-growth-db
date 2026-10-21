@@ -2,37 +2,62 @@ extends base
 
 block content
   main.main
-    .card-container
-      each creator in creators
-        - const currentRating = creator.ratingsAverage;
-        
-        - let tierClass = 'card--silver';
-        - let tierBadgeClass = 'tier-badge--silver';
-        - let tierLabel = 'SILVER TIER';
+    .dashboard-container
+      aside.sidebar
+        h3.sidebar__title Platforms
+        nav.sidebar__nav
+          a.sidebar__link(class=activePlatform === 'all' ? 'sidebar__link--active' : '', href='/?platform=all')
+            span.sidebar__icon 🌐
+            span All Platforms
+          a.sidebar__link(class=activePlatform === 'youtube' ? 'sidebar__link--active' : '', href='/?platform=youtube')
+            span.sidebar__icon ▶️
+            span YouTube
+          a.sidebar__link(class=activePlatform === 'twitch' ? 'sidebar__link--active' : '', href='/?platform=twitch')
+            span.sidebar__icon 👾
+            span Twitch
+          a.sidebar__link(class=activePlatform === 'tiktok' ? 'sidebar__link--active' : '', href='/?platform=tiktok')
+            span.sidebar__icon 🎵
+            span TikTok
+          a.sidebar__link(class=activePlatform === 'instagram' ? 'sidebar__link--active' : '', href='/?platform=instagram')
+            span.sidebar__icon 📸
+            span Instagram
 
-        - if (currentRating >= 4.8) { tierClass = 'card--gold'; tierBadgeClass = 'tier-badge--gold'; tierLabel = 'GOLD TIER'; }
-        - else if (currentRating >= 4.0 && currentRating < 4.5) { tierClass = 'card--bronze'; tierBadgeClass = 'tier-badge--bronze'; tierLabel = 'BRONZE TIER'; }
+      .content-area
+        if creators.length === 0
+          .no-results
+            p No creators found for this platform.
+        else
+          .card-container
+            each creator in creators
+              - const currentRating = creator.ratingsAverage;
+              
+              - let tierClass = 'card--silver';
+              - let tierBadgeClass = 'tier-badge--silver';
+              - let tierLabel = 'SILVER TIER';
 
-        .card(class=tierClass)
-          .card__header
-            .card__picture
-              span.tier-badge(class=tierBadgeClass)= tierLabel
-              img.card__picture-img(
-                src=creator.imageCover && creator.imageCover.startsWith('http') ? creator.imageCover : `https://dummyimage.com/600x360/4a5568/ffffff&text=${encodeURIComponent(creator.creatorName || creator.name || 'Creator')}`
-                alt=`${creator.creatorName || creator.name || 'Creator'}`
-              )
-            h3.heading-tertirary
-              span= creator.creatorName || creator.name || 'Anonymous Creator'
+              - if (currentRating >= 4.8) { tierClass = 'card--gold'; tierBadgeClass = 'tier-badge--gold'; tierLabel = 'GOLD TIER'; }
+              - else if (currentRating >= 4.0 && currentRating < 4.5) { tierClass = 'card--bronze'; tierBadgeClass = 'tier-badge--bronze'; tierLabel = 'BRONZE TIER'; }
 
-          .card__details
-            h4.card__sub-heading #{creator.platform || 'YouTube'} • #{creator.category || creator.niche || 'General'}
-            p.card__text= creator.summary || creator.growthStrategy || 'No summary available.'
-            
-            .card__data
-              span Subscribers: #{creator.subscriberCount ? creator.subscriberCount.toLocaleString() : (creator.subscriberGain ? creator.subscriberGain.toLocaleString() : 0)}
-            
-            .card__data
-              span Rating: #{currentRating} (#{creator.ratingsQuantity || 0})
+              .card(class=tierClass)
+                .card__header
+                  .card__picture
+                    span.tier-badge(class=tierBadgeClass)= tierLabel
+                    img.card__picture-img(
+                      src=creator.imageCover && creator.imageCover.startsWith('http') ? creator.imageCover : `https://dummyimage.com/600x360/4a5568/ffffff&text=${encodeURIComponent(creator.creatorName || creator.name || 'Creator')}`
+                      alt=`${creator.creatorName || creator.name || 'Creator'}`
+                    )
+                  h3.heading-tertirary
+                    span= creator.creatorName || creator.name || 'Anonymous Creator'
 
-          .card__footer
-            a.btn.btn--green.btn--small(href=`/creator/${creator.slug || creator._id}`) Details
+                .card__details
+                  h4.card__sub-heading #{creator.platform || 'YouTube'} • #{creator.category || creator.niche || 'General'}
+                  p.card__text= creator.summary || creator.growthStrategy || 'No summary available.'
+                  
+                  .card__data
+                    span Subscribers: #{creator.subscriberCount ? creator.subscriberCount.toLocaleString() : (creator.subscriberGain ? creator.subscriberGain.toLocaleString() : 0)}
+                  
+                  .card__data
+                    span Rating: #{currentRating} (#{creator.ratingsQuantity || 0})
+
+                .card__footer
+                  a.btn.btn--green.btn--small(href=`/creator/${creator.slug || creator._id}`) Details

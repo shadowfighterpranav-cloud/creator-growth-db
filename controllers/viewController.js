@@ -3,9 +3,16 @@ const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 
 exports.getOverview = catchAsync(async (req, res, next) => {
-  const rawCreators = await Creator.find();
+  // 1) Build filter object based on query param
+  const filter = {};
+  if (req.query.platform && req.query.platform.toLowerCase() !== "all") {
+    filter.platform = new RegExp(`^${req.query.platform}$`, "i");
+  }
 
-  // Map explicitly to ensure ratings are always populated
+  // 2) Fetch creators matching filter
+  const rawCreators = await Creator.find(filter);
+
+  // 3) Apply ratings & mappings
   const creators = rawCreators.map((creator) => {
     const doc = creator.toObject();
     const name = (doc.creatorName || doc.name || "").toLowerCase();
@@ -22,9 +29,13 @@ exports.getOverview = catchAsync(async (req, res, next) => {
     return doc;
   });
 
+  // 4) Render template with active platform tag
   res.status(200).render("overview", {
     title: "All Creators",
     creators,
+    activePlatform: req.query.platform
+      ? req.query.platform.toLowerCase()
+      : "all",
   });
 });
 
